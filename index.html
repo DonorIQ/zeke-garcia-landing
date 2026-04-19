@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zeke Garcia — R.A.G.E. Ministries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: #fff;
+      color: #111;
+      line-height: 1.6;
+    }
+
+    /* ── Variables ────────────────────────────────── */
+    :root {
+      --yellow: #F5E642;
+      --black: #111111;
+      --white: #ffffff;
+      --gray-light: #f5f5f5;
+      --gray-mid: #e0e0e0;
+      --gray-text: #555;
+      --max-w: 1100px;
+    }
+
+    /* ── Utility ──────────────────────────────────── */
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      overflow: hidden; clip: rect(0,0,0,0);
+    }
+
+    /* ── DONATE MODAL ─────────────────────────────── */
+    .donate-modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .donate-modal-backdrop.is-open {
+      display: flex;
+    }
+    .donate-modal {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      background: #fff;
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+      animation: modalIn 0.25s ease;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .donate-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: var(--black);
+      border-bottom: 2px solid var(--yellow);
+      flex-shrink: 0;
+    }
+    .donate-modal-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--yellow);
+    }
+    .donate-modal-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #aaa;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .donate-modal-close:hover {
+      color: var(--white);
+      background: rgba(255,255,255,0.1);
+    }
+    .donate-modal-body {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+    .donate-modal-body iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 560px;
+      border: none;
+      display: block;
+    }
+    .donate-modal-loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      background: #fff;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .donate-modal-loading.hidden { opacity: 0; }
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--gray-mid);
+      border-top-color: var(--yellow);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .donate-modal-loading p {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #aaa;
+    }
+
+    /* ── NAV ──────────────────────────────────────── */
+    .site-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(17,17,17,0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 2px solid var(--yellow);
+    }
+    .nav-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+    .nav-logo img {
+      height: 40px;
+      width: 40px;
+      object-fit: contain;
+    }
+    .nav-logo-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--white);
+      letter-spacing: 0.05em;
+      line-height: 1.2;
+    }
+    .nav-logo-text span {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      color: var(--yellow);
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: #ccc;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 10px;
+      border-radius: 4px;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--yellow); }
+    .nav-social {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .nav-social a {
+      color: #aaa;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+    }
+    .nav-social a:hover { color: var(--yellow); }
+    .nav-donate-btn {
+      background: var(--yellow) !important;
+      color: var(--black) !important;
+      font-weight: 800 !important;
+      padding: 8px 18px !important;
+      border-radius: 100px !important;
+      letter-spacing: 0.05em !important;
+      transition: background 0.2s, transform 0.1s !important;
+      cursor: pointer;
+      border: none;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .nav-donate-btn:hover {
+      background: #e8d800 !important;
+      color: var(--black) !important;
+      transform: scale(1.03);
+    }
+
+    /* ── HERO ─────────────────────────────────────── */
+    .hero {
+      position: relative;
+      height: 100vh;
+      min-height: 600px;
+      max-height: 820px;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+    }
+    .hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(17,17,17,0.15) 0%,
+        rgba(17,17,17,0.1) 40%,
+        rgba(17,17,17,0.75) 80%,
+        rgba(17,17,17,0.92) 100%
+      );
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      padding: 0 24px 56px;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 8px;
+    }
+    .hero-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(3.5rem, 10vw, 7rem);
+      font-weight: 900;
+      line-height: 0.95;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+    }
+    .hero-subtitle {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 28px;
+    }
+    .hero-cta {
+      display: inline-block;
+      background: var(--yellow);
+      color: var(--black);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 36px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .hero-cta:hover {
+      background: #e8d800;
+      transform: scale(1.04);
+    }
+
+    /* ── STATS STRIP ──────────────────────────────── */
+    .stats-strip {
+      background: var(--yellow);
+      padding: 20px 24px;
+    }
+    .stats-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .stat-item { text-align: center; }
+    .stat-number {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--black);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #333;
+      margin-top: 2px;
+    }
+    .stat-divider {
+      width: 1px;
+      height: 40px;
+      background: rgba(0,0,0,0.2);
+    }
+
+    /* ── MAIN CONTENT ─────────────────────────────── */
+    .main-section { padding: 80px 24px; }
+    .main-grid {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 60px;
+      align-items: start;
+    }
+
+    /* ── MISSION COPY ─────────────────────────────── */
+    .mission-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      background: var(--black);
+      display: inline-block;
+      padding: 4px 12px;
+      margin-bottom: 20px;
+    }
+    .mission-heading {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900;
+      line-height: 1.05;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-bottom: 24px;
+    }
+    .mission-body {
+      font-size: 1.05rem;
+      color: #333;
+      line-height: 1.75;
+      margin-bottom: 20px;
+    }
+    .mission-sign {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--black);
+      margin-bottom: 36px;
+    }
+    .mission-sign span {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 900;
+    }
+
+    /* ── IMPACT BLOCKS ────────────────────────────── */
+    .impact-blocks {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .impact-block {
+      border-left: 4px solid var(--yellow);
+      padding: 14px 18px;
+      background: var(--gray-light);
+    }
+    .impact-block-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 4px;
+    }
+    .impact-block-text {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--black);
+    }
+
+    /* ── MAIL ADDRESS ─────────────────────────────── */
+    .mail-block {
+      background: var(--black);
+      color: var(--white);
+      padding: 20px 24px;
+      margin-bottom: 40px;
+    }
+    .mail-block-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 8px;
+    }
+    .mail-block address {
+      font-style: normal;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: #ccc;
+    }
+
+    /* ── BUTTONS ──────────────────────────────────── */
+    .donate-cta-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: var(--yellow);
+      color: var(--black);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 32px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: #e8d800; transform: scale(1.03); }
+    .btn-outline {
+      display: inline-block;
+      background: transparent;
+      color: var(--black);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 13px 32px;
+      border-radius: 100px;
+      border: 2px solid var(--black);
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-outline:hover { background: var(--black); color: var(--white); }
+
+    /* ── SIDEBAR ──────────────────────────────────── */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      position: sticky;
+      top: 84px;
+    }
+    .sidebar-card {
+      background: var(--gray-light);
+      border: 1px solid var(--gray-mid);
+      overflow: hidden;
+    }
+    .sidebar-card-header {
+      background: var(--black);
+      padding: 14px 20px;
+    }
+    .sidebar-card-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--yellow);
+    }
+    .sidebar-card-body {
+      padding: 20px;
+    }
+    .sidebar-card-body p {
+      font-size: 0.9rem;
+      color: var(--gray-text);
+      margin-bottom: 14px;
+    }
+    .sidebar-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: var(--yellow);
+      color: var(--black);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 12px 20px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .sidebar-btn:hover { background: #e8d800; }
+    .sidebar-btn-outline {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: transparent;
+      color: var(--black);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 11px 20px;
+      border-radius: 100px;
+      border: 2px solid var(--black);
+      margin-top: 10px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .sidebar-btn-outline:hover { background: var(--black); color: var(--white); }
+
+    /* Prayer card */
+    .prayer-card {
+      background: var(--black);
+      padding: 24px 20px;
+      text-align: center;
+    }
+    .prayer-card-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 16px;
+    }
+    .prayer-card-main {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+    .prayer-card-number {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--yellow);
+      letter-spacing: 0.02em;
+    }
+    .prayer-card-tag {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: #888;
+      margin-top: 12px;
+    }
+
+    /* Social card */
+    .social-card {
+      background: var(--white);
+      border: 1px solid var(--gray-mid);
+      padding: 20px;
+    }
+    .social-card-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 14px;
+    }
+    .social-links { display: flex; gap: 12px; }
+    .social-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--black);
+      color: var(--white);
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .social-link:hover { background: var(--yellow); color: var(--black); transform: scale(1.1); }
+
+    /* ── GALLERY ──────────────────────────────────── */
+    .gallery-section {
+      background: var(--black);
+      padding: 80px 24px;
+    }
+    .section-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 8px;
+    }
+    .section-heading {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 900;
+      line-height: 0.95;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 40px;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 1 / 1;
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .gallery-item:hover img { transform: scale(1.06); }
+
+    /* ── VISION ───────────────────────────────────── */
+    .vision-section {
+      padding: 80px 24px;
+      background: var(--gray-light);
+    }
+    .vision-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .vision-heading {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 900;
+      line-height: 1.05;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-bottom: 24px;
+    }
+    .vision-heading em {
+      font-style: normal;
+      color: var(--yellow);
+      background: var(--black);
+      padding: 0 6px;
+    }
+    .vision-body {
+      font-size: 1rem;
+      color: #444;
+      line-height: 1.75;
+      margin-bottom: 28px;
+    }
+    .vision-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .vision-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.95rem;
+      color: #333;
+      font-weight: 500;
+    }
+    .vision-list li::before {
+      content: '';
+      display: block;
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      background: var(--yellow);
+      margin-top: 2px;
+      clip-path: polygon(0 50%, 35% 0, 100% 50%, 35% 100%);
+    }
+
+    /* ── BOTTOM CTA ───────────────────────────────── */
+    .bottom-cta {
+      background: var(--black);
+      padding: 80px 24px;
+      text-align: center;
+    }
+    .bottom-cta-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 16px;
+    }
+    .bottom-cta-heading {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 900;
+      line-height: 0.95;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 20px;
+    }
+    .bottom-cta-sub {
+      font-size: 1rem;
+      color: #aaa;
+      max-width: 520px;
+      margin: 0 auto 36px;
+    }
+    .bottom-cta-buttons {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-yellow-lg {
+      display: inline-block;
+      background: var(--yellow);
+      color: var(--black);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 1.1rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 16px 40px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-yellow-lg:hover { background: #e8d800; transform: scale(1.04); }
+    .btn-ghost-lg {
+      display: inline-block;
+      background: transparent;
+      color: var(--white);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 15px 40px;
+      border-radius: 100px;
+      border: 2px solid rgba(255,255,255,0.3);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost-lg:hover { border-color: var(--yellow); color: var(--yellow); }
+
+    /* ── FOOTER ───────────────────────────────────── */
+    .site-footer {
+      background: #0a0a0a;
+      border-top: 1px solid #222;
+      padding: 36px 24px;
+    }
+    .footer-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .footer-logo img {
+      height: 32px;
+      width: 32px;
+      object-fit: contain;
+      opacity: 0.8;
+    }
+    .footer-logo-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: #888;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+    }
+    .footer-links a {
+      color: #555;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--yellow); }
+    .footer-copy { color: #444; font-size: 0.75rem; }
+
+    /* ── RESPONSIVE ───────────────────────────────── */
+    @media (max-width: 900px) {
+      .main-grid { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .vision-inner { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .stats-inner { gap: 24px; }
+      .stat-divider { display: none; }
+    }
+    @media (max-width: 600px) {
+      .hero-content { padding-bottom: 40px; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .donate-cta-row { flex-direction: column; }
+      .bottom-cta-buttons { flex-direction: column; align-items: center; }
+      .footer-inner { flex-direction: column; text-align: center; }
+      .footer-links { justify-content: center; }
+      .donate-modal { max-height: 95vh; }
+      .donate-modal-body iframe { min-height: 480px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── DONATE MODAL ── -->
+  <div class="donate-modal-backdrop" id="donateModal" role="dialog" aria-modal="true" aria-label="Donate to R.A.G.E. Ministries">
+    <div class="donate-modal">
+      <div class="donate-modal-header">
+        <span class="donate-modal-title">Partner With Zeke Garcia</span>
+        <button class="donate-modal-close" id="donateModalClose" aria-label="Close donation form">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="donate-modal-body">
+        <div class="donate-modal-loading" id="donateLoading">
+          <div class="spinner"></div>
+          <p>Loading donation form…</p>
+        </div>
+        <iframe
+          id="donateFrame"
+          src=""
+          title="Donate to R.A.G.E. Ministries — Zeke Garcia"
+          allow="payment"
+          loading="lazy"
+        ></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── NAVIGATION ── -->
+  <nav class="site-nav" aria-label="Site navigation">
+    <div class="nav-inner">
+      <a href="https://www.rageministries.com" class="nav-logo" target="_blank" rel="noopener">
+        <img src="images/rage-logo-white.png" alt="R.A.G.E. Ministries Logo" />
+        <div class="nav-logo-text">
+          R.A.G.E. Ministries
+          <span>Zeke Garcia</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="https://www.rageministries.com" target="_blank" rel="noopener">Home</a></li>
+        <li><a href="https://www.rageministries.com/about" target="_blank" rel="noopener">About</a></li>
+        <li><a href="https://www.rageministries.com/booking" target="_blank" rel="noopener">Booking</a></li>
+        <li><a href="https://www.rageministries.com/give" target="_blank" rel="noopener">Give</a></li>
+        <li><button class="nav-donate-btn donate-trigger">Donate</button></li>
+      </ul>
+      <div class="nav-social">
+        <a href="https://www.facebook.com/zekegarciamusic" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+        <a href="https://www.youtube.com/@zekegarciamusic" target="_blank" rel="noopener" aria-label="YouTube">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#111"/></svg>
+        </a>
+        <a href="https://www.instagram.com/zekegarciamusic/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero" aria-label="Zeke Garcia hero">
+    <img class="hero-img" src="images/zeke-hero.jpg" alt="Zeke Garcia" />
+    <div class="hero-overlay"></div>
+    <div class="hero-content container">
+      <p class="hero-eyebrow">R.A.G.E. Ministries Presents</p>
+      <h1 class="hero-title">Zeke<br>Garcia</h1>
+      <p class="hero-subtitle">Be a Part of Our Mission</p>
+      <button class="hero-cta donate-trigger">Donate Now</button>
+    </div>
+  </section>
+
+  <!-- ── STATS STRIP ── -->
+  <div class="stats-strip" aria-label="Impact statistics">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <div class="stat-number">8</div>
+        <div class="stat-label">Summer Camps</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-number">3</div>
+        <div class="stat-label">States Reached</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-number">200+</div>
+        <div class="stat-label">Students Saved</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-number">1,500+</div>
+        <div class="stat-label">Trained in Evangelism</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MAIN CONTENT ── -->
+  <section class="main-section" id="content">
+    <div class="main-grid">
+
+      <!-- Left: Mission Copy -->
+      <div class="mission-col">
+        <p class="mission-label">Our Mission</p>
+        <h2 class="mission-heading">Reaching A Generation<br>Endangered</h2>
+
+        <p class="mission-body">
+          R.A.G.E. Ministries is a non-profit dedicated to preaching the Gospel to the next generation and equipping them to do the same. Your support enables us to serve in churches across the country, develop music and resources, train young leaders in evangelism, and expand our digital reach.
+        </p>
+        <p class="mission-body">
+          By using my gifts in teaching, equipping, and music, I help connect with youth for the sake of the Gospel. Every donation — whether one-time, monthly, or through sponsoring resources — directly fuels our mission to reach more young people with the hope of Christ. Thank you for partnering with us!
+        </p>
+
+        <div class="mission-sign">
+          In Christ,
+          <span>Zeke</span>
+        </div>
+
+        <div class="impact-blocks">
+          <div class="impact-block">
+            <div class="impact-block-title">Summer Impact</div>
+            <div class="impact-block-text">8 Camps · 3 States · 200+ Students Saved · 1,500+ Trained In Evangelism</div>
+          </div>
+          <div class="impact-block">
+            <div class="impact-block-title">Fall Vision</div>
+            <div class="impact-block-text">Creating New Music &amp; Resources · Speaking at Youth Retreats &amp; Wednesday Night Events · Evangelism Trainings</div>
+          </div>
+          <div class="impact-block">
+            <div class="impact-block-title">Ways to Give</div>
+            <div class="impact-block-text">Monthly or One-Time Gifts — every dollar goes directly to the mission.</div>
+          </div>
+        </div>
+
+        <div class="mail-block">
+          <div class="mail-block-label">Mail Checks To</div>
+          <address>
+            R.A.G.E. Ministries<br>
+            PO Box 80417<br>
+            Keller, TX 76244
+          </address>
+        </div>
+
+        <div class="donate-cta-row">
+          <button class="btn-primary donate-trigger">Donate Now</button>
+          <a href="https://wearerage.myflodesk.com/zeke" target="_blank" rel="noopener" class="btn-outline">
+            Join Our Newsletter
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: Sidebar -->
+      <aside class="sidebar" aria-label="Sidebar">
+
+        <!-- Give Card -->
+        <div class="sidebar-card">
+          <div class="sidebar-card-header">
+            <div class="sidebar-card-title">Partner With Zeke</div>
+          </div>
+          <div class="sidebar-card-body">
+            <p>Your gift directly supports gospel outreach, music creation, and evangelism training for the next generation.</p>
+            <button class="sidebar-btn donate-trigger">Give Now</button>
+            <a href="https://wearerage.myflodesk.com/zeke" target="_blank" rel="noopener" class="sidebar-btn-outline">
+              Sign Up For Our Newsletter
+            </a>
+          </div>
+        </div>
+
+        <!-- Prayer Card -->
+        <div class="prayer-card">
+          <div class="prayer-card-label">Join Our Prayer Team</div>
+          <div class="prayer-card-main">Text "PRAY" to</div>
+          <div class="prayer-card-number">(833) 285-2372</div>
+          <div class="prayer-card-tag">#WeAreRAGE</div>
+        </div>
+
+        <!-- Social Card -->
+        <div class="social-card">
+          <div class="social-card-title">Follow Zeke</div>
+          <div class="social-links">
+            <a href="https://www.facebook.com/zekegarciamusic" target="_blank" rel="noopener" class="social-link" aria-label="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="https://www.youtube.com/@zekegarciamusic" target="_blank" rel="noopener" class="social-link" aria-label="YouTube">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#111"/></svg>
+            </a>
+            <a href="https://www.instagram.com/zekegarciamusic/" target="_blank" rel="noopener" class="social-link" aria-label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </a>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+  </section>
+
+  <!-- ── GALLERY ── -->
+  <section class="gallery-section" aria-label="Photo gallery">
+    <div class="container">
+      <p class="section-label">In the Field</p>
+      <h2 class="section-heading">The Mission<br>In Action</h2>
+      <div class="gallery-grid">
+        <div class="gallery-item">
+          <img src="images/slide1.jpg" alt="Zeke Garcia performing on stage with crowd" loading="lazy" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/slide2.jpg" alt="Zeke Garcia speaking to youth at camp event" loading="lazy" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/slide3.jpg" alt="Zeke Garcia with youth group at summer camp" loading="lazy" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/slide4.jpg" alt="Large youth crowd at Zeke Garcia event" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── VISION ── -->
+  <section class="vision-section" aria-label="Vision and ways to give">
+    <div class="vision-inner">
+      <div>
+        <p class="section-label" style="color:#111;">What's Next</p>
+        <h2 class="vision-heading">Fall <em>Vision</em><br>2025</h2>
+        <p class="vision-body">
+          The work doesn't stop when summer ends. Zeke is continuing to create new music, develop evangelism resources, and speak at youth retreats and Wednesday night events across the country.
+        </p>
+        <ul class="vision-list">
+          <li>Creating New Music &amp; Resources</li>
+          <li>Speaking at Youth Retreats &amp; Wednesday Night Events</li>
+          <li>Evangelism Trainings for the Next Generation</li>
+          <li>Monthly or One-Time Giving Options Available</li>
+        </ul>
+      </div>
+      <div>
+        <img src="images/slide3.jpg" alt="Zeke with youth at camp" style="width:100%;display:block;border-radius:2px;" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BOTTOM CTA ── -->
+  <section class="bottom-cta" aria-label="Donate call to action">
+    <p class="bottom-cta-eyebrow">Partner With Us</p>
+    <h2 class="bottom-cta-heading">Be Part of<br>the Mission</h2>
+    <p class="bottom-cta-sub">Every dollar you give reaches another young person with the hope of Jesus Christ. Join us.</p>
+    <div class="bottom-cta-buttons">
+      <button class="btn-yellow-lg donate-trigger">Donate Now</button>
+      <a href="https://wearerage.myflodesk.com/zeke" target="_blank" rel="noopener" class="btn-ghost-lg">
+        Join the Newsletter
+      </a>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <a href="https://www.rageministries.com" target="_blank" rel="noopener" class="footer-logo">
+        <img src="images/rage-logo-white.png" alt="R.A.G.E. Ministries" />
+        <span class="footer-logo-text">R.A.G.E. Ministries</span>
+      </a>
+      <ul class="footer-links">
+        <li><a href="https://www.rageministries.com" target="_blank" rel="noopener">rageministries.com</a></li>
+        <li><button class="footer-links donate-trigger" style="background:none;border:none;cursor:pointer;color:#555;font-size:0.8rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;font-family:inherit;transition:color 0.2s;" onmouseover="this.style.color='#F5E642'" onmouseout="this.style.color='#555'">Give</button></li>
+        <li><a href="https://wearerage.myflodesk.com/zeke" target="_blank" rel="noopener">Newsletter</a></li>
+        <li><a href="https://www.qgiv.com/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a></li>
+      </ul>
+      <p class="footer-copy">&copy; 2025 R.A.G.E. Ministries. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ── MODAL SCRIPT ── -->
+  <script>
+    const DONATE_URL = 'https://secure.qgiv.com/event/zekegarcia/';
+
+    const modal    = document.getElementById('donateModal');
+    const frame    = document.getElementById('donateFrame');
+    const loading  = document.getElementById('donateLoading');
+    const closeBtn = document.getElementById('donateModalClose');
+
+    function openModal() {
+      // Inject the src only on first open to avoid pre-loading
+      if (!frame.src || frame.src === window.location.href) {
+        loading.classList.remove('hidden');
+        frame.src = DONATE_URL;
+        frame.addEventListener('load', function onLoad() {
+          loading.classList.add('hidden');
+          frame.removeEventListener('load', onLoad);
+        });
+      }
+      modal.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      closeBtn.focus();
+    }
+
+    function closeModal() {
+      modal.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    // All donate triggers
+    document.querySelectorAll('.donate-trigger').forEach(function(el) {
+      el.addEventListener('click', openModal);
+    });
+
+    // Close button
+    closeBtn.addEventListener('click', closeModal);
+
+    // Click outside modal to close
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) closeModal();
+    });
+
+    // Escape key to close
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+    });
+  </script>
+
+</body>
+</html>
